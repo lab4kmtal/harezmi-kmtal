@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Su Tüketiminde Farkındalık ve Otonom Tasarruf Sistemleri — Harezmi Eğitim Modeli</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ocean-deep:   #04342C;
+    --ocean-mid:    #0F6E56;
+    --ocean-bright: #1D9E75;
+    --ocean-light:  #5DCAA5;
+    --ocean-pale:   #E1F5EE;
+    --sky-deep:     #042C53;
+    --sky-mid:      #185FA5;
+    --sky-bright:   #378ADD;
+    --sky-light:    #85B7EB;
+    --sky-pale:     #E6F1FB;
+    --gold:         #EF9F27;
+    --gold-dark:    #BA7517;
+    --sand:         #FAEEDA;
+    --text-primary: #1a2e1a;
+    --text-muted:   #4a6a5a;
+    --white:        #ffffff;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--ocean-deep);
+    color: var(--white);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── ANIMATED WATER BACKGROUND ── */
+  .water-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background: linear-gradient(160deg, #04342C 0%, #0a4a38 30%, #042C53 70%, #04342C 100%);
+    overflow: hidden;
+  }
+  .water-bg::before {
+    content: '';
+    position: absolute;
+    inset: -50%;
+    background:
+      radial-gradient(ellipse 80% 50% at 20% 30%, rgba(29,158,117,0.18) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 70%, rgba(55,138,221,0.15) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 60% at 50% 10%, rgba(93,202,165,0.10) 0%, transparent 50%);
+    animation: drift 18s ease-in-out infinite alternate;
+  }
+  .water-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(0deg, transparent, transparent 60px, rgba(255,255,255,0.012) 60px, rgba(255,255,255,0.012) 61px),
+      repeating-linear-gradient(90deg, transparent, transparent 80px, rgba(255,255,255,0.008) 80px, rgba(255,255,255,0.008) 81px);
+  }
+  @keyframes drift {
+    0%   { transform: translate(0,0) scale(1); }
+    100% { transform: translate(3%, 2%) scale(1.04); }
+  }
+
+  /* ── LAYOUT ── */
+  .page { position: relative; z-index: 1; }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 6rem 2rem 4rem;
+    position: relative;
+  }
+
+  .badge-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 2.5rem;
+    animation: fadeUp 0.8s ease both;
+  }
+  .badge {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 999px;
+    border: 1px solid;
+  }
+  .badge-green  { background: rgba(29,158,117,0.18); border-color: rgba(93,202,165,0.45); color: #9FE1CB; }
+  .badge-blue   { background: rgba(55,138,221,0.15); border-color: rgba(133,183,235,0.4); color: #B5D4F4; }
+  .badge-gold   { background: rgba(239,159,39,0.15); border-color: rgba(239,159,39,0.4);  color: #FAC775; }
+
+  .hero-eyebrow {
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ocean-light);
+    margin-bottom: 1rem;
+    animation: fadeUp 0.9s 0.1s ease both;
+  }
+
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.4rem, 6vw, 5rem);
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.5rem;
+    animation: fadeUp 1s 0.2s ease both;
+  }
+  .hero-title .accent-teal  { color: var(--ocean-light); }
+  .hero-title .accent-blue  { color: var(--sky-light); }
+
+  .hero-subtitle {
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    font-weight: 300;
+    color: rgba(255,255,255,0.65);
+    max-width: 620px;
+    line-height: 1.7;
+    margin-bottom: 2rem;
+    animation: fadeUp 1s 0.3s ease both;
+  }
+
+  .his-box {
+    max-width: 680px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(93,202,165,0.3);
+    border-left: 4px solid var(--ocean-light);
+    border-radius: 12px;
+    padding: 1.4rem 2rem;
+    margin-bottom: 3rem;
+    animation: fadeUp 1s 0.4s ease both;
+    text-align: left;
+  }
+  .his-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ocean-light);
+    margin-bottom: 0.5rem;
+  }
+  .his-text {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1.05rem;
+    color: rgba(255,255,255,0.9);
+    line-height: 1.65;
+  }
+
+  .scroll-hint {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: rgba(255,255,255,0.35);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    animation: fadeUp 1s 0.6s ease both, bounce 2s 1.6s ease-in-out infinite;
+  }
+  .scroll-arrow {
+    width: 24px; height: 24px;
+    border-right: 2px solid rgba(255,255,255,0.3);
+    border-bottom: 2px solid rgba(255,255,255,0.3);
+    transform: rotate(45deg);
+  }
+
+  /* ── SDG STRIP ── */
+  .sdg-strip {
+    background: rgba(255,255,255,0.04);
+    border-top: 1px solid rgba(255,255,255,0.07);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    padding: 2rem;
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+  }
+  .sdg-strip-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+    white-space: nowrap;
+  }
+  .sdg-goals {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .sdg-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 14px 7px 10px;
+    border-radius: 999px;
+    border: 1px solid;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .sdg-chip .num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .sdg-6  { background: rgba(0,133,189,0.15); border-color: rgba(0,133,189,0.4); color: #7ecced; }
+  .sdg-6  .num  { background: rgba(0,133,189,0.4); color: #c8ebf8; }
+  .sdg-4  { background: rgba(197,23,63,0.15); border-color: rgba(197,23,63,0.35); color: #f79bb4; }
+  .sdg-4  .num  { background: rgba(197,23,63,0.35); color: #fcd0dc; }
+  .sdg-13 { background: rgba(63,126,68,0.2); border-color: rgba(63,126,68,0.4); color: #8ed49a; }
+  .sdg-13 .num  { background: rgba(63,126,68,0.4); color: #c6edca; }
+  .sdg-15 { background: rgba(86,192,42,0.15); border-color: rgba(86,192,42,0.35); color: #a8e87c; }
+  .sdg-15 .num  { background: rgba(86,192,42,0.35); color: #d0f5af; }
+
+  /* ── SECTION ── */
+  section {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 5rem 2rem;
+  }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ocean-light);
+    margin-bottom: 0.8rem;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 1.2rem;
+  }
+  .section-desc {
+    font-size: 1rem;
+    font-weight: 300;
+    color: rgba(255,255,255,0.6);
+    max-width: 540px;
+    line-height: 1.75;
+    margin-bottom: 3rem;
+  }
+
+  /* ── WEB PAGES GRID ── */
+  .pages-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .page-card {
+    position: relative;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 20px;
+    padding: 2rem;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    transition: transform 0.3s ease, background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+  }
+  .page-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    border-radius: 20px 20px 0 0;
+    transition: opacity 0.3s ease;
+  }
+  .page-card:hover {
+    transform: translateY(-6px);
+    background: rgba(255,255,255,0.07);
+  }
+
+  .card-1::before { background: linear-gradient(90deg, #1D9E75, #5DCAA5); }
+  .card-2::before { background: linear-gradient(90deg, #378ADD, #85B7EB); }
+  .card-3::before { background: linear-gradient(90deg, #EF9F27, #FAC775); }
+  .card-4::before { background: linear-gradient(90deg, #D4537E, #ED93B1); }
+
+  .card-1:hover { border-color: rgba(29,158,117,0.5); box-shadow: 0 20px 40px rgba(29,158,117,0.12); }
+  .card-2:hover { border-color: rgba(55,138,221,0.5); box-shadow: 0 20px 40px rgba(55,138,221,0.12); }
+  .card-3:hover { border-color: rgba(239,159,39,0.5); box-shadow: 0 20px 40px rgba(239,159,39,0.12); }
+  .card-4:hover { border-color: rgba(212,83,126,0.5); box-shadow: 0 20px 40px rgba(212,83,126,0.12); }
+
+  .card-icon {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+  }
+  .card-1 .card-icon { background: rgba(29,158,117,0.2); }
+  .card-2 .card-icon { background: rgba(55,138,221,0.2); }
+  .card-3 .card-icon { background: rgba(239,159,39,0.2); }
+  .card-4 .card-icon { background: rgba(212,83,126,0.2); }
+
+  .card-number {
+    position: absolute;
+    top: 1.4rem; right: 1.6rem;
+    font-family: 'Playfair Display', serif;
+    font-size: 3.5rem;
+    font-weight: 900;
+    color: rgba(255,255,255,0.05);
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  .card-tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 999px;
+    margin-bottom: 0.2rem;
+  }
+  .card-1 .card-tag { background: rgba(29,158,117,0.2); color: #9FE1CB; }
+  .card-2 .card-tag { background: rgba(55,138,221,0.2); color: #B5D4F4; }
+  .card-3 .card-tag { background: rgba(239,159,39,0.2); color: #FAC775; }
+  .card-4 .card-tag { background: rgba(212,83,126,0.2); color: #F4C0D1; }
+
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 0.3rem;
+  }
+  .card-desc {
+    font-size: 0.87rem;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.65;
+    flex: 1;
+  }
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    margin-top: auto;
+  }
+  .card-students {
+    font-size: 11px;
+    color: rgba(255,255,255,0.4);
+    font-weight: 500;
+  }
+  .card-arrow {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.07);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .page-card:hover .card-arrow {
+    background: rgba(255,255,255,0.15);
+    transform: translateX(3px);
+  }
+
+  /* ── HAREZMI SECTION ── */
+  .harezmi-section {
+    background: rgba(255,255,255,0.03);
+    border-top: 1px solid rgba(255,255,255,0.07);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+  .harezmi-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 5rem 2rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+  }
+  @media (max-width: 720px) {
+    .harezmi-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+  }
+
+  .harezmi-logo-area {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+  .harezmi-emblem {
+    width: 130px; height: 70px;
+    border-radius: 22px;
+    background: linear-gradient(135deg, rgba(29,158,117,0.3), rgba(55,138,221,0.3));
+    border: 1px solid rgba(93,202,165,0.3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 3rem;
+  }
+  .harezmi-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+  }
+  .harezmi-sub {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.45);
+    margin-top: -0.8rem;
+    font-weight: 300;
+    line-height: 1.5;
+  }
+  .school-info {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    font-size: 0.85rem;
+    line-height: 1.7;
+    color: rgba(255,255,255,0.65);
+  }
+  .school-info strong { color: rgba(255,255,255,0.9); font-weight: 500; }
+
+  .principles-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .principle {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+  .principle-num {
+    flex-shrink: 0;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(29,158,117,0.3), rgba(55,138,221,0.2));
+    border: 1px solid rgba(93,202,165,0.3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ocean-light);
+    margin-top: 2px;
+  }
+  .principle-body strong {
+    display: block;
+    font-size: 0.92rem;
+    font-weight: 500;
+    margin-bottom: 2px;
+  }
+  .principle-body span {
+    font-size: 0.82rem;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.5;
+  }
+
+  /* ── VATAN STRIP ── */
+  .vatan-strip {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 2rem 4rem;
+  }
+  .vatan-card {
+    background: linear-gradient(135deg,
+      rgba(4,52,44,0.8) 0%,
+      rgba(15,110,86,0.6) 40%,
+      rgba(4,44,83,0.8) 100%);
+    border: 1px solid rgba(93,202,165,0.25);
+    border-radius: 24px;
+    padding: 3rem;
+    display: flex;
+    gap: 3rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .vatan-visual {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+  }
+  .vatan-icon-row {
+    display: flex;
+    gap: -8px;
+    font-size: 2.5rem;
+    line-height: 1;
+  }
+  .vatan-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+  .vatan-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ocean-light);
+    text-align: center;
+  }
+  .vatan-body {
+    flex: 1;
+    min-width: 220px;
+  }
+  .vatan-body p {
+    font-size: 0.95rem;
+    color: rgba(255,255,255,0.75);
+    line-height: 1.75;
+  }
+  .vatan-body p + p { margin-top: 0.75rem; }
+  .vatan-stat-row {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-top: 1.5rem;
+  }
+  .vatan-stat strong {
+    display: block;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--ocean-light);
+  }
+  .vatan-stat span {
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.45);
+    font-weight: 300;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid rgba(255,255,255,0.07);
+    padding: 2.5rem 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+    text-align: center;
+  }
+  footer p {
+    font-size: 0.82rem;
+    color: rgba(255,255,255,0.3);
+    font-weight: 300;
+  }
+  footer strong { color: rgba(255,255,255,0.6); font-weight: 500; }
+
+  /* ── DIVIDER ── */
+  .divider {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+  }
+
+  /* ── VIDEO SECTION ── */
+  .video-section {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 5rem 2rem;
+    display: grid;
+    grid-template-columns: 1fr 1.6fr;
+    gap: 4rem;
+    align-items: center;
+  }
+  @media (max-width: 780px) {
+    .video-section { grid-template-columns: 1fr; gap: 2rem; }
+  }
+  .video-info { display: flex; flex-direction: column; gap: 1.2rem; }
+  .video-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--sky-light);
+    background: rgba(55,138,221,0.12);
+    border: 1px solid rgba(133,183,235,0.3);
+    border-radius: 999px;
+    padding: 5px 14px;
+    width: fit-content;
+  }
+  .video-heading {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .video-desc {
+    font-size: 0.92rem;
+    font-weight: 300;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.75;
+  }
+  .video-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid rgba(255,255,255,0.07);
+  }
+  .video-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.82rem;
+    color: rgba(255,255,255,0.4);
+    font-weight: 400;
+  }
+  .video-meta-item span { color: rgba(255,255,255,0.7); font-weight: 500; }
+  .video-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--ocean-light);
+    flex-shrink: 0;
+  }
+  .video-wrapper {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 32px 64px rgba(0,0,0,0.4);
+  }
+  .video-wrapper iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+
+  /* ── GALLERY ── */
+  .gallery-section {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 5rem 2rem;
+  }
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 1rem;
+  }
+  @media (max-width: 680px) {
+    .gallery-grid { grid-template-columns: 1fr; }
+    .gallery-main { grid-row: auto !important; }
+  }
+  .gallery-main {
+    grid-row: 1 / 3;
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    aspect-ratio: 4/3;
+    cursor: pointer;
+  }
+  .gallery-small {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    aspect-ratio: 4/3;
+    cursor: pointer;
+  }
+  .gallery-main img,
+  .gallery-small img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.5s ease;
+  }
+  .gallery-main:hover img,
+  .gallery-small:hover img { transform: scale(1.04); }
+  .gallery-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(4,52,44,0.88) 0%, transparent 55%);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 1.4rem;
+  }
+  .gallery-small .gallery-overlay {
+    background: linear-gradient(to top, rgba(4,44,83,0.88) 0%, transparent 55%);
+    padding: 1rem;
+  }
+  .gallery-caption-tag {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .gallery-main .gallery-caption-tag { color: var(--ocean-light); }
+  .gallery-small .gallery-caption-tag { color: var(--sky-light); }
+  .gallery-caption {
+    font-size: 0.95rem;
+    font-weight: 500;
+    line-height: 1.3;
+    color: #fff;
+  }
+  .gallery-small .gallery-caption { font-size: 0.82rem; }
+  .gallery-badge {
+    position: absolute;
+    top: 1rem; left: 1rem;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: rgba(29,158,117,0.25);
+    border: 1px solid rgba(93,202,165,0.4);
+    color: #9FE1CB;
+    backdrop-filter: blur(4px);
+  }
+  .gallery-small .gallery-badge {
+    background: rgba(55,138,221,0.25);
+    border-color: rgba(133,183,235,0.4);
+    color: #B5D4F4;
+  }
+  /* lightbox */
+  .lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(0,0,0,0.93);
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+  .lightbox.open { display: flex; }
+  .lightbox-img {
+    max-width: 88vw;
+    max-height: 82vh;
+    border-radius: 12px;
+    object-fit: contain;
+  }
+  .lightbox-caption {
+    position: fixed;
+    bottom: 1.5rem;
+    left: 0; right: 0;
+    text-align: center;
+    font-size: 0.88rem;
+    color: rgba(255,255,255,0.55);
+    pointer-events: none;
+  }
+  .lb-close {
+    position: fixed;
+    top: 1.5rem; right: 1.5rem;
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s;
+    line-height: 1;
+  }
+  .lb-close:hover { background: rgba(255,255,255,0.2); }
+  .lb-prev, .lb-next {
+    position: fixed;
+    top: 50%; transform: translateY(-50%);
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: #fff;
+    font-size: 22px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s;
+    line-height: 1;
+  }
+  .lb-prev:hover, .lb-next:hover { background: rgba(255,255,255,0.2); }
+  .lb-prev { left: 1.5rem; }
+  .lb-next { right: 1.5rem; }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(28px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50%       { transform: translateY(8px); }
+  }
+
+  .fade-in {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .fade-in:nth-child(1) { transition-delay: 0s;    }
+  .fade-in:nth-child(2) { transition-delay: 0.1s;  }
+  .fade-in:nth-child(3) { transition-delay: 0.2s;  }
+  .fade-in:nth-child(4) { transition-delay: 0.3s;  }
+</style>
+</head>
+<body>
+
+<div class="water-bg"></div>
+
+<div class="page">
+
+  <!-- ── HERO ── -->
+  <div class="hero">
+    <div class="badge-row">
+      <span class="badge badge-green">🌿 Harezmi Eğitim Modeli</span>
+      <span class="badge badge-blue">💧 SDG 6 — Temiz Su</span>
+      <span class="badge badge-gold">🌍 Sürdürülebilir Kalkınma</span>
+    </div>
+
+    <p class="hero-eyebrow">Koşuyolu Mesleki ve Teknik Anadolu Lisesi · 2025–2026</p>
+
+    <h1 class="hero-title">
+      <span class="accent-teal">Su Tüketiminde</span><br>
+      Farkındalık ve<br>
+      <span class="accent-blue">Otonom Tasarruf</span> Sistemleri
+    </h1>
+
+    <p class="hero-subtitle">
+      Hayatın içinden bir sorundan yola çıkarak geliştirilen dört disiplinlerarası web projesi.
+      Sensör teknolojisi, Python programlama ve toplumsal farkındalık bir arada.
+    </p>
+
+    <div class="his-box">
+      <div class="his-label">HİS Cümlesi</div>
+      <p class="his-text">
+        "Musluklar açık kaldığında hem faturam yükseliyor hem de doğa zarar görüyor;
+        ben de bunu durdurmak istiyorum."
+      </p>
+    </div>
+
+    <div class="scroll-hint">
+      <span>Sayfaları keşfet</span>
+      <div class="scroll-arrow"></div>
+    </div>
+  </div>
+
+  <!-- ── SDG STRIP ── -->
+  <div class="sdg-strip">
+    <span class="sdg-strip-label">Sürdürülebilir Kalkınma Amaçları</span>
+    <div class="sdg-goals">
+      <div class="sdg-chip sdg-6">
+        <span class="num">6</span>
+        Temiz Su ve Sanitasyon
+      </div>
+      <div class="sdg-chip sdg-4">
+        <span class="num">4</span>
+        Nitelikli Eğitim
+      </div>
+      <div class="sdg-chip sdg-13">
+        <span class="num">13</span>
+        İklim Eylemi
+      </div>
+      <div class="sdg-chip sdg-15">
+        <span class="num">15</span>
+        Karasal Yaşam
+      </div>
+    </div>
+  </div>
+
+  <!-- ── WEB PAGES ── -->
+  <section>
+    <p class="section-label">Öğrenci Projeleri</p>
+    <h2 class="section-title">Dört Web Sayfası,<br>Bir Amaç</h2>
+    <p class="section-desc">
+      11. sınıf öğrencilerimizin Harezmi süreci boyunca
+      geliştirdiği dört bağımsız web sayfasını aşağıdan ziyaret edebilirsiniz.
+    </p>
+
+    <div class="pages-grid">
+
+      <a href="sayfa1.html" class="page-card card-1 fade-in">
+        <span class="card-number">01</span>
+        <div class="card-icon">💧</div>
+        <div>
+          <span class="card-tag">Teknoloji</span>
+          <h3 class="card-title">Akıllı Sulama Sistemi</h3>
+          <p class="card-desc">
+            Toprak nem sensörleri ile çalışan otonom sulama prototipinin
+            tasarım süreci, devre şeması ve karşılaştırmalı ölçüm sonuçları.
+          </p>
+        </div>
+        <div class="card-footer">
+          <span class="card-students">Arduino · MIT App Inventor</span>
+          <span class="card-arrow">→</span>
+        </div>
+      </a>
+
+      <a href="sayfa2.html" class="page-card card-2 fade-in">
+        <span class="card-number">02</span>
+        <div class="card-icon">📊</div>
+        <div>
+          <span class="card-tag">Yazılım</span>
+          <h3 class="card-title">Su Ayak İzi Hesaplayıcısı</h3>
+          <p class="card-desc">
+            Python ile geliştirilen kişisel su tüketim analiz uygulaması;
+            günlük aktivite verileri, grafik çıktılar ve bireysel tasarruf önerileri.
+          </p>
+        </div>
+        <div class="card-footer">
+          <span class="card-students">Python · Matplotlib</span>
+          <span class="card-arrow">→</span>
+        </div>
+      </a>
+
+      <a href="ogrenciWbSayfalari/rojin.2121/kapak.html" class="page-card card-3 fade-in">
+        <span class="card-number">03</span>
+        <div class="card-icon">🔥</div>
+        <div>
+          <span class="card-tag">Çevre Bilinci</span>
+          <h3 class="card-title">Anız Yangınları ve Çevre Kirliliği</h3>
+          <p class="card-desc">
+            Tarım arazilerindeki anız yakma pratiğinin ekosisteme, su kaynaklarına
+            ve insan sağlığına verdiği zararları anlatan bilgilendirme sitesi.
+          </p>
+        </div>
+        <div class="card-footer">
+          <span class="card-students">Araştırma</span>
+          <span class="card-arrow">→</span>
+        </div>
+      </a>
+
+      <a href="ogrenciWbSayfalari/SifirAtikFarah/baslık.html" class="page-card card-4 fade-in">
+        <span class="card-number">04</span>
+        <div class="card-icon">🌍</div>
+        <div>
+          <span class="card-tag">Sürdürülebilirlik</span>
+          <h3 class="card-title">Sıfır Atık Seferberliği</h3>
+          <p class="card-desc">
+            Türkiye BM Sürdürülebilir Kalkınma Amacı 6 bağlamında Sıfır Atık seferberliği ilan etmiştir.
+          </p>
+        </div>
+        <div class="card-footer">
+          <span class="card-students">Voki · Canva · Poster</span>
+          <span class="card-arrow">→</span>
+        </div>
+      </a>
+
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ── VIDEO ── -->
+  <div class="video-section fade-in">
+    <div class="video-info">
+      <span class="video-tag">▶ Proje Videosu</span>
+      <h2 class="video-heading">Sürecimizi<br>Sizinle Paylaşıyoruz</h2>
+      <p class="video-desc">
+        Problem tespitinden prototip geliştirmeye, Python kodlamadan
+        saha testlerine uzanan tüm Harezmi sürecimizi anlatan
+        belgesel niteliğindeki proje videomuzu izleyebilirsiniz.
+      </p>
+      <div class="video-meta">
+        <div class="video-meta-item">
+          <div class="video-dot"></div>
+          Okul: <span>Koşuyolu Mesleki ve Teknik Anadolu Lisesi</span>
+        </div>
+        <div class="video-meta-item">
+          <div class="video-dot"></div>
+          Sınıf: <span>11. Sınıf — 20 Öğrenci</span>
+        </div>
+        <div class="video-meta-item">
+          <div class="video-dot"></div>
+          Model: <span>Harezmi Eğitim Modeli · Ekip #1</span>
+        </div>
+        <div class="video-meta-item">
+          <div class="video-dot"></div>
+          Dönem: <span>2025–2026 Eğitim Öğretim Yılı</span>
+        </div>
+      </div>
+    </div>
+    <div class="video-wrapper">
+      <iframe
+        src="https://www.youtube.com/embed/nspANTeYJ2w"
+        title="Su Tüketiminde Farkındalık ve Otonom Tasarruf Sistemleri — Harezmi Eğitim Modeli Proje Videosu"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowfullscreen>
+      </iframe>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ── GALERİ ── -->
+  <div class="gallery-section fade-in">
+    <p class="section-label">Fotoğraf Galerisi</p>
+    <h2 class="section-title" style="margin-bottom:0.8rem;">Süreçten Kareler</h2>
+    <p class="section-desc">
+      Sergi standımızdan sınıf çalışmalarımıza, devre kurulumundan
+      ekip toplantılarına — Harezmi yolculuğumuzdan anlık görüntüler.
+    </p>
+
+    <div class="gallery-grid">
+
+      <div class="gallery-main" onclick="openLb(0)">
+        <img src="prototip.jpg" alt="Harezmi sergi standı ve prototip">
+        <div class="gallery-badge">⭐ Öne Çıkan</div>
+        <div class="gallery-overlay">
+          <div class="gallery-caption-tag">Sergi &amp; Prototip</div>
+          <div class="gallery-caption">Harezmi Eğitim Modeli Çıktılarımız — Sergi Standı</div>
+        </div>
+      </div>
+
+      <div class="gallery-small" onclick="openLb(1)">
+        <img src="sinif.jpg" alt="Ekibimiz öğretmenlerimizle birlikte">
+        <div class="gallery-badge">Ekibimiz</div>
+        <div class="gallery-overlay">
+          <div class="gallery-caption-tag">Ekip</div>
+          <div class="gallery-caption">Öğrenciler ve Öğretmenlerimizle Birlikte</div>
+        </div>
+      </div>
+
+      <div class="gallery-small" onclick="openLb(2)">
+        <img src="surec.jpg" alt="Sensör ve devre kurulum çalışmaları">
+        <div class="gallery-badge">Çalışma</div>
+        <div class="gallery-overlay">
+          <div class="gallery-caption-tag">Uygulama</div>
+          <div class="gallery-caption">Sensör ve Devre Kurulum Çalışmaları</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div style="margin-top:1rem;position:relative;border-radius:20px;overflow:hidden;height:260px;cursor:pointer;" onclick="openLb(3)">
+      <img src="surec2.jpg" alt="Harezmi ders ve toplantı ortamı"
+        style="width:100%;height:100%;object-fit:cover;object-position:center 30%;transition:transform 0.5s;display:block;"
+        onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
+      <div style="position:absolute;inset:0;background:linear-gradient(to right,rgba(4,52,44,0.88) 0%,transparent 55%);display:flex;align-items:center;padding:2.5rem;">
+        <div>
+          <div style="font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--ocean-light);margin-bottom:6px;">Harezmi Süreci</div>
+          <div style="font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;color:#fff;line-height:1.3;">Problem Analizi ve<br>Ders Çalışmaları</div>
+          <div style="margin-top:8px;font-size:0.82rem;color:rgba(255,255,255,0.5);">Öğrenciler Harezmi Eğitim Modeli oturumunda</div>
+        </div>
+      </div>
+      <div style="position:absolute;top:1rem;right:1rem;font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:4px 12px;border-radius:999px;background:rgba(239,159,39,0.25);border:1px solid rgba(250,199,117,0.4);color:#FAC775;">Toplantı</div>
+    </div>
+  </div>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" onclick="closeLbBg(event)">
+    <button class="lb-close" onclick="closeLb()">✕</button>
+    <button class="lb-prev" onclick="shiftLb(-1);event.stopPropagation()">&#8249;</button>
+    <img class="lightbox-img" id="lb-img" src="" alt="">
+    <button class="lb-next" onclick="shiftLb(1);event.stopPropagation()">&#8250;</button>
+    <div class="lightbox-caption" id="lb-cap"></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ── HAREZMI ── -->
+  <section class="harezmi-section">
+    <div class="harezmi-inner">
+      <div class="harezmi-logo-area">
+        <div class="harezmi-emblem"><img src="logo1T.png" alt="" style="width: 110px;height: 60px;"></div>
+        <div>
+          <div class="harezmi-name">Harezmi Eğitim Modeli</div>
+          <div class="harezmi-sub">
+            Millî Eğitim Bakanlığı<br>
+            Türkiye Yüzyılı Maarif Modeli
+          </div>
+        </div>
+        <div class="school-info">
+          <strong>Ekip #1 — 2025–2026</strong><br>
+          Koşuyolu Mesleki ve Teknik Anadolu Lisesi<br>
+          Diyarbakır / Bağlar · 11. Sınıf · 20 Öğrenci<br><br>
+          <strong>Ekip:</strong> Engin Çetin · Mustafa Kaçmaz<br>
+          Seda Coşkun Eliküçük · Uğur Aktaş<br><br>
+          <strong>İl Koordinatörü:</strong> Nevzat Can
+        </div>
+      </div>
+
+      <div class="principles-list">
+        <p class="section-label" style="margin-bottom:1.2rem;">Modelin Dört Temel İlkesi</p>
+        <div class="principle">
+          <div class="principle-num">1</div>
+          <div class="principle-body">
+            <strong>Disiplinlerarası Yaklaşım</strong>
+            <span>Bilgisayar Bilimi, Fen–Matematik, Sosyal Bilimler ve Sanat–Tasarım eşdeğer biçimde süreçte yer alır.</span>
+          </div>
+        </div>
+        <div class="principle">
+          <div class="principle-num">2</div>
+          <div class="principle-body">
+            <strong>Hayatın İçinden Sorunlar</strong>
+            <span>Problemler yerel, ulusal ve evrensel ölçekte veriye dayalı olarak öğrenciler tarafından belirlenir.</span>
+          </div>
+        </div>
+        <div class="principle">
+          <div class="principle-num">3</div>
+          <div class="principle-body">
+            <strong>Teknoloji Araçlarının Kullanımı</strong>
+            <span>Programlama, robotik, oyun tasarımı ve yapay zekâ araçları çözüm sürecine entegre edilir.</span>
+          </div>
+        </div>
+        <div class="principle">
+          <div class="principle-num">4</div>
+          <div class="principle-body">
+            <strong>Ar-Ge Yöntemi ve Yaygınlaştırma</strong>
+            <span>Süreç araştırma-geliştirme yöntemleriyle yürütülür; çıktılar etkinlikler ve sergilerle paylaşılır.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── MAVİ-YEŞİL VATAN ── -->
+  <div class="vatan-strip">
+    <div class="vatan-card">
+      <div class="vatan-visual">
+        <div class="vatan-icon-row">🌊🌿</div>
+        <div class="vatan-title">Mavi Yeşil Vatan</div>
+        <div class="vatan-label">Su Kaynakları &amp; Ekosistem</div>
+      </div>
+      <div class="vatan-body">
+        <p>
+          Türkiye, yılda kişi başına yaklaşık <strong>1.313 m³</strong> kullanılabilir su ile
+          uluslararası <em>su stresi</em> sınırında yer almaktadır. 2025 su yılı,
+          son yarım yüzyılın en kurak yılı olarak kayıtlara geçmiştir.
+        </p>
+        <p>
+          Dicle–Fırat havzasındaki bu okulda yürütülen proje, hem yerel su
+          ekosistemlerine duyarlılığı hem de Türkiye'nin mavi-yeşil vatan
+          mirasını koruma sorumluluğunu taşımaktadır.
+        </p>
+        <div class="vatan-stat-row">
+          <div class="vatan-stat">
+            <strong>%45–55</strong>
+            <span>Su tasarrufu<br>oranı</span>
+          </div>
+          <div class="vatan-stat">
+            <strong>+24 puan</strong>
+            <span>Farkındalık<br>artışı</span>
+          </div>
+          <div class="vatan-stat">
+            <strong>1.313 m³</strong>
+            <span>Kişi başı yıllık<br>kullanılabilir su</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── FOOTER ── -->
+  <footer>
+    <p>
+      <strong>Koşuyolu Mesleki ve Teknik Anadolu Lisesi</strong> ·
+      Diyarbakır / Bağlar · 2025–2026 Eğitim Öğretim Yılı
+    </p>
+    <p>Harezmi Eğitim Modeli · Ekip #1 · Millî Eğitim Bakanlığı</p>
+    <p>Sürdürülebilir Kalkınma Amaçları — SDG 6 · SDG 4 · SDG 13 · SDG 15</p>
+  </footer>
+
+</div><!-- .page -->
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  const lbData = [
+    { src: 'prototip.jpg', cap: 'Sergi & Prototip — Harezmi Eğitim Modeli Çıktılarımız' },
+    { src: 'sinif.jpg',    cap: 'Ekibimiz — Öğrenciler ve Öğretmenlerimizle Birlikte' },
+    { src: 'surec.jpg',    cap: 'Uygulama — Sensör ve Devre Kurulum Çalışmaları' },
+    { src: 'surec2.jpg',   cap: 'Harezmi Süreci — Problem Analizi ve Ders Çalışmaları' },
+  ];
+  let lbIdx = 0;
+
+  function openLb(i) {
+    lbIdx = i;
+    document.getElementById('lb-img').src = lbData[i].src;
+    document.getElementById('lb-cap').textContent = lbData[i].cap;
+    document.getElementById('lightbox').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLb() {
+    document.getElementById('lightbox').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  function closeLbBg(e) {
+    if (e.target === document.getElementById('lightbox')) closeLb();
+  }
+  function shiftLb(dir) {
+    lbIdx = (lbIdx + dir + lbData.length) % lbData.length;
+    document.getElementById('lb-img').src = lbData[lbIdx].src;
+    document.getElementById('lb-cap').textContent = lbData[lbIdx].cap;
+  }
+  document.addEventListener('keydown', e => {
+    if (!document.getElementById('lightbox').classList.contains('open')) return;
+    if (e.key === 'Escape') closeLb();
+    if (e.key === 'ArrowRight') shiftLb(1);
+    if (e.key === 'ArrowLeft')  shiftLb(-1);
+  });
+</script>
+</body>
+</html>
